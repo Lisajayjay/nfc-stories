@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Object 1</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<style>
+body {
+  margin: 0;
+  font-family: sans-serif;
+  background: black;
+  color: white;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+  text-align: center;
+}
+button {
+  padding: 15px 25px;
+  font-size: 18px;
+}
+</style>
+</head>
+
+<body>
+<div>
+  <h1>Object 1</h1>
+  <p>Tap to listen</p>
+  <button onclick="playAudio()">Play</button>
+
+  <audio id="audio">
+    <source src="object1.mp3" type="audio/mpeg">
+  </audio>
+</div>
+
+<script>
+function playAudio() {
+  document.getElementById("audio").play();
+}
+</script>
+
+</body>
+</html>
