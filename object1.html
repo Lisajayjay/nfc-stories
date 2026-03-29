@@ -6,32 +6,23 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
 <style>
-h1 {
-  opacity: 0;
-  animation: fade 2s forwards;
-}
-
-@keyframes fade {
-  to { opacity: 1; }
-}
-  body {
+body {
   margin: 0;
-  background: #c9a227; /* gold */
-  color: #222;
+  background: #d4af37; /* rich gold */
+  color: #222;          /* black text */
   font-family: sans-serif;
-
   display: flex;
   justify-content: center;
   align-items: center;
   height: 100vh;
   text-align: center;
-
   cursor: pointer;
 }
 
 h1 {
   letter-spacing: 0.1em;
   font-size: 1.8rem;
+  margin: 0;
 }
 
 .hint {
@@ -46,7 +37,7 @@ h1 {
 
 <div>
   <h1>TRIAL</h1>
-  <div class="hint">tap</div>
+  <div class="hint" id="hint">tap</div>
 </div>
 
 <audio id="audio">
@@ -55,19 +46,31 @@ h1 {
 
 <script>
 const audio = document.getElementById("audio");
+const hint = document.getElementById("hint");
 
-// Try autoplay
+// Try autoplay on page load
 window.addEventListener("load", () => {
   audio.play().catch(() => {
-    // silently fail — user will tap
+    // Autoplay blocked — user will tap
   });
 });
 
-// Tap anywhere to play
+// Tap anywhere to play, but only if audio is paused
 document.body.addEventListener("click", () => {
-  audio.play();
-}, { once: true });
+  if (audio.paused) {
+    audio.currentTime = 0; // start from beginning
+    audio.play();
+  }
+});
 
+// Update hint opacity based on audio state
+audio.addEventListener("play", () => {
+  hint.style.opacity = 0.5;
+});
+
+audio.addEventListener("ended", () => {
+  hint.style.opacity = 1;
+});
 </script>
 
 </body>
