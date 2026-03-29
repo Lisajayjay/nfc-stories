@@ -6,39 +6,68 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
 <style>
-body {
+h1 {
+  opacity: 0;
+  animation: fade 2s forwards;
+}
+
+@keyframes fade {
+  to { opacity: 1; }
+}
+  body {
   margin: 0;
+  background: #c9a227; /* gold */
+  color: #222;
   font-family: sans-serif;
-  background: gold;
-  color: black;
+
   display: flex;
   justify-content: center;
   align-items: center;
   height: 100vh;
   text-align: center;
+
+  cursor: pointer;
 }
-button {
-  padding: 15px 25px;
-  font-size: 18px;
+
+h1 {
+  letter-spacing: 0.1em;
+  font-size: 1.8rem;
+}
+
+.hint {
+  margin-top: 20px;
+  font-size: 0.8rem;
+  opacity: 0.5;
 }
 </style>
 </head>
 
 <body>
+
 <div>
   <h1>TRIAL</h1>
-  <p>Tap to listen</p>
-  <button onclick="playAudio()">Play</button>
-
-  <audio id="audio">
-    <source src="object1.mp3" type="audio/mpeg">
-  </audio>
+  <div class="hint">tap</div>
 </div>
 
+<audio id="audio">
+  <source src="object1.mp3" type="audio/mpeg">
+</audio>
+
 <script>
-function playAudio() {
-  document.getElementById("audio").play();
-}
+const audio = document.getElementById("audio");
+
+// Try autoplay
+window.addEventListener("load", () => {
+  audio.play().catch(() => {
+    // silently fail — user will tap
+  });
+});
+
+// Tap anywhere to play
+document.body.addEventListener("click", () => {
+  audio.play();
+}, { once: true });
+
 </script>
 
 </body>
