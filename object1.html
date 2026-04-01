@@ -8,8 +8,8 @@
 <style>
 body {
   margin: 0;
-  background: #d4af37; /* rich gold */
-  color: #222;          /* black text */
+  background: #d4af37;
+  color: #222;
   font-family: sans-serif;
   display: flex;
   justify-content: center;
@@ -17,6 +17,12 @@ body {
   height: 100vh;
   text-align: center;
   cursor: pointer;
+  transition: background 1s ease;
+}
+
+/* Halo effect */
+body.playing {
+  background: radial-gradient(circle, #f5d76e 0%, #d4af37 60%);
 }
 
 h1 {
@@ -48,27 +54,39 @@ h1 {
 const audio = document.getElementById("audio");
 const hint = document.getElementById("hint");
 
-// Try autoplay on page load
+// Try autoplay
 window.addEventListener("load", () => {
-  audio.play().catch(() => {
-    // Autoplay blocked — user will tap
-  });
+  audio.play().catch(() => {});
 });
 
-// Tap anywhere to play, but only if audio is paused
+// Tap behaviour
 document.body.addEventListener("click", () => {
-  if (audio.paused) {
-    audio.currentTime = 0; // start from beginning
+  if (!audio.paused && !audio.ended) {
+    // If playing → pause
+    audio.pause();
+  } else if (audio.ended) {
+    // If finished → restart
+    audio.currentTime = 0;
+    audio.play();
+  } else {
+    // If paused → resume
     audio.play();
   }
 });
 
-// Update hint opacity based on audio state
+// Visual + hint feedback
 audio.addEventListener("play", () => {
-  hint.style.opacity = 0.5;
+  document.body.classList.add("playing");
+  hint.style.opacity = 0.3;
+});
+
+audio.addEventListener("pause", () => {
+  document.body.classList.remove("playing");
+  hint.style.opacity = 1;
 });
 
 audio.addEventListener("ended", () => {
+  document.body.classList.remove("playing");
   hint.style.opacity = 1;
 });
 </script>
