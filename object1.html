@@ -17,12 +17,7 @@ body {
   height: 100vh;
   text-align: center;
   cursor: pointer;
-  transition: background 1s ease;
-}
-
-/* Halo effect */
-body.playing {
-  background: radial-gradient(circle, #f5d76e 0%, #d4af37 60%);
+  transition: background 0.2s linear;
 }
 
 h1 {
@@ -46,7 +41,7 @@ h1 {
   <div class="hint" id="hint">tap</div>
 </div>
 
-<audio id="audio">
+<audio id="audio" crossorigin="anonymous">
   <source src="object1.mp3" type="audio/mpeg">
 </audio>
 
@@ -54,39 +49,74 @@ h1 {
 const audio = document.getElementById("audio");
 const hint = document.getElementById("hint");
 
-// Try autoplay
+// --- AUDIO ANALYSIS SETUP ---
+const ctx = new (window.AudioContext || window.webkitAudioContext)();
+const source = ctx.createMediaElementSource(audio);
+const analyser = ctx.createAnalyser();
+
+source.connect(analyser);
+analyser.connect(ctx.destination);
+
+analyser.fftSize = 256;
+const dataArray = new Uint8Array(analyser.frequencyBinCount);
+
+// --- AUTOPLAY ATTEMPT ---
 window.addEventListener("load", () => {
   audio.play().catch(() => {});
 });
 
-// Tap behaviour
-document.body.addEventListener("click", () => {
+// --- TAP BEHAVIOUR ---
+document.body.addEventListener("click", async () => {
+  await ctx.resume(); // required for iPhone
+
   if (!audio.paused && !audio.ended) {
-    // If playing → pause
     audio.pause();
   } else if (audio.ended) {
-    // If finished → restart
     audio.currentTime = 0;
     audio.play();
   } else {
-    // If paused → resume
     audio.play();
   }
 });
 
-// Visual + hint feedback
+// --- HALO ANIMATION ---
+function animate() {
+  requestAnimationFrame(animate);
+
+  analyser.getByteFrequencyData(dataArray);
+
+  // Get average volume
+  let sum = 0;
+  for (let i = 0; i < dataArray.length; i++) {
+    sum += dataArray[i];
+  }
+  let avg = sum / dataArray.length;
+
+  // Map volume to glow intensity
+  let intensity = avg / 255;
+
+  // Subtle scaling
+  let glowSize = 60 + intensity * 20;
+
+  document.body.style.background = `
+    radial-gradient(circle, 
+      rgba(245,215,110,${0.6 + intensity * 0.4}) 0%, 
+      #d4af37 ${glowSize}%)
+  `;
+}
+
+animate();
+
+// --- HINT FEEDBACK ---
 audio.addEventListener("play", () => {
-  document.body.classList.add("playing");
   hint.style.opacity = 0.3;
 });
 
 audio.addEventListener("pause", () => {
-  document.body.classList.remove("playing");
   hint.style.opacity = 1;
 });
 
 audio.addEventListener("ended", () => {
-  document.body.classList.remove("playing");
   hint.style.opacity = 1;
 });
 </script>
