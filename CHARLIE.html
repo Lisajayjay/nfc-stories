@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>CHARLIE</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<style>
+body {
+  margin: 0;
+  background: #d4af37;
+  color: #222;
+  font-family: sans-serif;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+  text-align: center;
+  cursor: pointer;
+}
+
+/* Heartbeat halo */
+body.playing {
+  animation: heartbeat 3s infinite;
+}
+
+/* Double pulse (lub-dub) */
+@keyframes heartbeat {
+  0%   { background: radial-gradient(circle, #f5d76e 0%, #d4af37 65%); }
+  10%  { background: radial-gradient(circle, #f2d98a 0%, #d4af37 60%); }
+  20%  { background: radial-gradient(circle, #f5d76e 0%, #d4af37 65%); }
+  30%  { background: radial-gradient(circle, #f2d98a 0%, #d4af37 58%); }
+  40%  { background: radial-gradient(circle, #f5d76e 0%, #d4af37 65%); }
+  100% { background: radial-gradient(circle, #f5d76e 0%, #d4af37 65%); }
+}
+  
+@keyframes textbeat {
+  0%   { transform: scale(1); }
+  12%  { transform: scale(1.08); }  /* first strong beat */
+  20%  { transform: scale(1); }
+  32%  { transform: scale(1.05); }  /* second softer beat */
+  45%  { transform: scale(1); }
+  100% { transform: scale(1); }
+}
+  
+h1 {
+  letter-spacing: 0.1em;
+  font-size: 1.8rem;
+  margin: 0;
+}
+
+/* Stronger pulse */
+body.playing h1 {
+  animation: textbeat 3s infinite;
+}
+/* Pulse text with heartbeat */
+body.playing h1 {
+  animation: textbeat 3s infinite;
+}
+
+.hint {
+  margin-top: 20px;
+  font-size: 0.8rem;
+  opacity: 0.5;
+}
+</style>
+</head>
+
+<body>
+
+<div>
+  <h1>CHARLIE</h1>
+  <div class="hint" id="hint">tap</div>
+</div>
+
+<audio id="audio">
+  <source src="Charlie.mp3" type="audio/mpeg">
+</audio>
+
+<script>
+const audio = document.getElementById("audio");
+const hint = document.getElementById("hint");
+
+// Try autoplay
+window.addEventListener("load", () => {
+  audio.play().catch(() => {});
+});
+
+// Tap behaviour
+document.body.addEventListener("click", () => {
+  if (!audio.paused && !audio.ended) {
+    audio.pause();
+  } else if (audio.ended) {
+    audio.currentTime = 0;
+    audio.play();
+  } else {
+    audio.play();
+  }
+});
+
+// Visual feedback
+audio.addEventListener("play", () => {
+  document.body.classList.add("playing");
+  hint.style.opacity = 0.3;
+});
+
+audio.addEventListener("pause", () => {
+  document.body.classList.remove("playing");
+  hint.style.opacity = 1;
+});
+
+audio.addEventListener("ended", () => {
+  document.body.classList.remove("playing");
+  hint.style.opacity = 1;
+});
+</script>
+
+</body>
+</html>
