@@ -1,1 +1,7 @@
-*.mp3 filter=lfs\ndiff=lfs\nmerge=lfs\n-text
+*.mp3 filter=lfs diff=lfs merge=lfs
+*.wav filter=lfs diff=lfs merge=lfs
+*.flac filter=lfs diff=lfs merge=lfs
+*.m4a filter=lfs diff=lfs merge=lfs
+*.ogg filter=lfs diff=lfs merge=lfs
+*.aac filter=lfs diff=lfs merge=lfs
+*.aiff filter=lfs diff=lfs merge=lfs
